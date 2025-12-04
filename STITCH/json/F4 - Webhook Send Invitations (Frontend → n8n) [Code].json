@@ -1,0 +1,278 @@
+{
+  "name": "F4 - Webhook Send Invitations (Frontend → n8n) [Code]",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "send-invitations",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook /webhook/send-invitations",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        112
+      ],
+      "id": "08373bb3-d046-445f-b27a-451dca3c1dfa",
+      "webhookId": "8159e7a0-f8dc-4321-a33a-f505f9187066"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const data = $json;\n\nif (!data.categoryId) {\n  return { ok: false, error: \"categoryId missing\" };\n}\n\nif (!data.templateId) {\n  return { ok: false, error: \"templateId missing\" };\n}\n\nreturn {\n  ok: true,\n  categoryId: data.categoryId,\n  templateId: data.templateId\n};"
+      },
+      "name": "Code - Validate Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        112
+      ],
+      "id": "2548d0ae-5b28-46d8-a6a4-ffa6e5f7cdc8"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.ok}}"
+            }
+          ]
+        }
+      },
+      "name": "IF Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        496,
+        112
+      ],
+      "id": "02d905de-9bfc-4f23-ad22-5a5df1657202"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const categoryId = $json.categoryId;\n\nconst filter = encodeURIComponent(`FIND('${categoryId}', {CategoriaMiembros})`);\n\nconst url = `https://api.airtable.com/v0/${$env.AIRTABLE_BASE_ID}/Clientes?filterByFormula=${filter}&pageSize=100`;\n\nreturn {\n  ok: true,\n  url,\n  categoryId,\n  templateId: $json.templateId\n};"
+      },
+      "name": "Code - Build Contacts URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        112
+      ],
+      "id": "7cf96e29-c443-422d-8aa9-5d6a434a2f6c"
+    },
+    {
+      "parameters": {
+        "url": "={{$json.url}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "=Authorization: Bearer {{$env.AIRTABLE_API_KEY}}\nContent-Type: application/json",
+        "options": {}
+      },
+      "name": "HTTP Airtable - List Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        976,
+        112
+      ],
+      "id": "c47b6c14-8246-4152-833a-10b0114b34f5"
+    },
+    {
+      "parameters": {
+        "jsCode": "const resp = $items(\"HTTP Airtable - List Contacts\", 0, 0).json;\n\nif (!resp || !resp.records || resp.records.length === 0) {\n  return { ok: false, error: \"No contacts found\" };\n}\n\nconst templateId = $items(\"Code - Build Contacts URL\", 0, 0).json.templateId;\n\nconst batch = resp.records.map(r => ({\n  fields: {\n    Cliente: [r.id],\n    Plantilla: [templateId],\n    Enviada: false,\n    Fecha: new Date().toISOString()\n  }\n}));\n\nreturn {\n  ok: true,\n  invitationsBatch: batch\n};"
+      },
+      "name": "Code - Build Invitations",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        112
+      ],
+      "id": "3f2faf4c-51a1-4f67-9b2d-24fff9e5825f"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.ok}}"
+            }
+          ]
+        }
+      },
+      "name": "IF Has Records?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        112
+      ],
+      "id": "6980904f-1cf0-4620-89d3-49aed441151e"
+    },
+    {
+      "parameters": {
+        "url": "https://api.airtable.com/v0/{{$env.AIRTABLE_BASE_ID}}/Invitaciones",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{ { \"records\": $json.invitationsBatch } }}",
+        "options": {}
+      },
+      "name": "HTTP Airtable - Create Invitations",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1696,
+        112
+      ],
+      "id": "408c94bb-7a8f-4303-a333-35ba76011876"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  success: true,\n  message: \"Invitations created successfully\"\n};"
+      },
+      "name": "Code - Respond OK",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1936,
+        112
+      ],
+      "id": "02b6f3cc-3ecf-40e9-b377-d4fdca39336f"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  success: false,\n  error: $json.error || \"Unknown error\"\n};"
+      },
+      "name": "Code - Respond Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        272
+      ],
+      "id": "76c777a4-44b0-424d-9f8d-493f7b765648"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook /webhook/send-invitations": {
+      "main": [
+        [
+          {
+            "node": "Code - Validate Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Validate Payload": {
+      "main": [
+        [
+          {
+            "node": "IF Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Valid?": {
+      "main": [
+        [
+          {
+            "node": "Code - Build Contacts URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code - Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Build Contacts URL": {
+      "main": [
+        [
+          {
+            "node": "HTTP Airtable - List Contacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Airtable - List Contacts": {
+      "main": [
+        [
+          {
+            "node": "Code - Build Invitations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Build Invitations": {
+      "main": [
+        [
+          {
+            "node": "IF Has Records?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Has Records?": {
+      "main": [
+        [
+          {
+            "node": "HTTP Airtable - Create Invitations",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code - Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Airtable - Create Invitations": {
+      "main": [
+        [
+          {
+            "node": "Code - Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "e14c1c0e-01f9-4941-a827-ebe6a3ee5e55",
+  "meta": {
+    "instanceId": "823e05b53a9f039112409b0aaa9551637a59cfabac75361b5080b7ff7307d49a"
+  },
+  "id": "TrW6Z1HwUMKe80pr",
+  "tags": []
+}

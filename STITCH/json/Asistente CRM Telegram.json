@@ -1,0 +1,399 @@
+{
+  "name": "Asistente CRM Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "cf92df08-8fcf-49e7-b4cd-a4693085702d",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1168,
+        304
+      ],
+      "webhookId": "125450f5-8601-47ed-bf37-5cd6739b9eeb",
+      "credentials": {
+        "telegramApi": {
+          "id": "j5rRdpRbhwcyVdR6",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{\n  chat_id: $json[\"message\"][\"from\"][\"id\"],\n  text: $json[\"message\"][\"text\"]\n}];"
+      },
+      "id": "453d704f-5937-4ee9-a55c-ab48eb904432",
+      "name": "Procesar mensaje",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string"
+      },
+      "id": "88404071-3381-4979-8e85-bbd68b8a6c6b",
+      "name": "Elegir acción",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appy24qX3JQ1UfLiZ",
+          "mode": "list",
+          "cachedResultName": "WMF CRM",
+          "cachedResultUrl": "https://airtable.com/appy24qX3JQ1UfLiZ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblqMUQIXiOKeai9N",
+          "mode": "list",
+          "cachedResultName": "CategoriaMiembros",
+          "cachedResultUrl": "https://airtable.com/appy24qX3JQ1UfLiZ/tblqMUQIXiOKeai9N"
+        },
+        "options": {}
+      },
+      "id": "8d448f02-7f9c-450d-ae9f-ce7b5bc88f4b",
+      "name": "Airtable - Faltan confirmar",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        32,
+        32
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "pWPWH96396hxEhtD",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appy24qX3JQ1UfLiZ",
+          "mode": "list",
+          "cachedResultName": "WMF CRM",
+          "cachedResultUrl": "https://airtable.com/appy24qX3JQ1UfLiZ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbleGl3emo0VpYCOV",
+          "mode": "list",
+          "cachedResultName": "EJemplo_base_completado",
+          "cachedResultUrl": "https://airtable.com/appy24qX3JQ1UfLiZ/tbleGl3emo0VpYCOV"
+        },
+        "options": {}
+      },
+      "id": "f6f0c3a5-30f3-4124-8480-a48bb2876ed0",
+      "name": "Airtable - Faltan foto",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        32,
+        208
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "pWPWH96396hxEhtD",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "base": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "e5732aba-7b9f-4b62-9fd0-c42b6436a6d4",
+      "name": "Airtable - Totales",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        32,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "base": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "bf7e35d8-3bd1-48ef-ad58-5f046e068f93",
+      "name": "Airtable - Todos",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        32,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "base": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "566a11c4-3ac2-4c9e-b1ea-1c60c9986599",
+      "name": "Airtable - Buscar empresa",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        32,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "base": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "4613c7c1-0304-4b84-83a8-e0d5fa9b7c10",
+      "name": "Airtable - Recordatorios",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        32,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json[\"chat_id\"]}}",
+        "text": "={{$json[\"choices\"][0][\"message\"][\"content\"]}}",
+        "additionalFields": {}
+      },
+      "id": "c0dcfd6e-83a8-4d0c-9c5e-481c9b450e3b",
+      "name": "Enviar mensaje Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        640,
+        352
+      ],
+      "webhookId": "09a26993-be26-4fd8-8881-b8e8fd51f0ac",
+      "credentials": {
+        "telegramApi": {
+          "id": "j5rRdpRbhwcyVdR6",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Eres un asistente de un CRM de eventos llamado WMF.\nIdentifica qué quiere hacer el usuario con este mensaje: {{$json.text}}\nEl usuario puede pedir cosas como:\n- \"quiénes faltan de confirmar\"\n- \"quiénes no subieron foto\"\n- \"cuántos confirmados hay\"\n- \"muéstrame todos los clientes\"\n- \"quién tiene recordatorio activo\"\n- \"búscame <empresa>\"\n\nDevuelve UNA sola palabra clave:\nconfirmaciones | faltanfoto | totales | todos | recordatorios | buscar:<empresa>\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -640,
+        320
+      ],
+      "id": "c6871c17-c11b-45e4-ac74-f26bc8a1d1ca",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TyLlqrOgkpYJNKH",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Responde amablemente al usuario según esta información: {{$json}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        240,
+        352
+      ],
+      "id": "57d3fed0-1e25-42a9-b12b-b5b37d4c4229",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TyLlqrOgkpYJNKH",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Procesar mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Elegir acción": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Buscar empresa",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable - Faltan confirmar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable - Faltan foto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable - Totales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar mensaje": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Elegir acción",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Totales": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Enviar mensaje Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b75ef82c-c235-4de7-b7c3-163a6b80582f",
+  "meta": {
+    "instanceId": "823e05b53a9f039112409b0aaa9551637a59cfabac75361b5080b7ff7307d49a"
+  },
+  "id": "sEQBbQIrfLT4ojk7",
+  "tags": []
+}

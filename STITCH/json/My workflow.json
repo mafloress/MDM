@@ -1,0 +1,261 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e0347fb1-9e17-43f7-85dc-78ebab318793",
+      "name": "Telegram Trigger",
+      "webhookId": "f999331e-9edd-40ae-ba9b-15b3219dcf29",
+      "credentials": {
+        "telegramApi": {
+          "id": "j5rRdpRbhwcyVdR6",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Eres un asistente experto en bases de datos. \nTienes acceso a una tabla de Airtable con estos campos:\ncompany, first_name, last_name, job_title, email, telephone, country, areas_de_especializacion, regiones_donde_has_realizado_eventos, estados_de_mexico, pasatiempos, comentarios, evento_1_wmf_connections_tam_2022, evento_2_wmf_ceo_summit_mty_2022, evento_3_wmf_summit_puebla_2022, evento_4_wmf_summit_sma_2022, evento_5_wmf_summit_rd_2022, evento_6_wmf_study_mission_prague_2022, evento_7_wmf_meet_me_in_downtown_2022, evento_8_wmf_believe_los_cabos_2022, evento_9_wmf_believe_caribe_2022, evento_10_wmf_believe_summit_baja_california_2022\n\nTu tarea:\n1. Entender la pregunta del usuario.\n2. Preparar una consulta en lenguaje lógico para Airtable (formula).\n3. Devolver la fórmula lista para utilizarse en Airtable.\n4. Si no se requiere fórmula, indicar “no_formula”.\n\nTu respuesta debe ser siempre:\n{\n  \"type\": \"formula\" o \"no_formula\",\n  \"formula\": \"AQUÍ\", \n  \"summary\": \"Texto que describa qué vas a buscar.\"\n}",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.message.text }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d6c6ddb5-811a-4258-a722-e0a64259b872",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TyLlqrOgkpYJNKH",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bc4863d3-d838-46a1-a8aa-a0c265a1af1f",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "={{ $json.message.text }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "999795d9-c426-4c15-aa90-082164db2bc7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appy24qX3JQ1UfLiZ",
+          "mode": "list",
+          "cachedResultName": "WMF CRM",
+          "cachedResultUrl": "https://airtable.com/appy24qX3JQ1UfLiZ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbleGl3emo0VpYCOV",
+          "mode": "list",
+          "cachedResultName": "EJemplo_base_completado",
+          "cachedResultUrl": "https://airtable.com/appy24qX3JQ1UfLiZ/tbleGl3emo0VpYCOV"
+        },
+        "filterByFormula": "={{ $json.formula }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        -96
+      ],
+      "id": "2087a980-c595-4b14-a6fb-a866026cfac0",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "pWPWH96396hxEhtD",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Eres un asistente que formatea datos obtenidos de Airtable.\nRecibes:\n- La pregunta original del usuario\n- Los registros resultantes\n\nTu tarea:\n- Responder de forma clara y organizada\n- Usar viñetas cuando sean listas\n- Combinar first_name + last_name como nombre completo\n- Incluir correos solo si la pregunta lo implica\n- Si no hay resultados, devuelve un mensaje amable\n- Responde solo texto listo para telegram",
+              "role": "system"
+            },
+            {
+              "content": "=Pregunta original:\n{{ $json.original || $node[\"OpenAI\"].json.original }}\n\nRegistros de Airtable:\n{{ $json.records }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1008,
+        -96
+      ],
+      "id": "bf35b88e-8fbe-438a-92e1-583a1bb5eebf",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TyLlqrOgkpYJNKH",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.message.chat.id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        -96
+      ],
+      "id": "9ed0d4d7-06c9-4587-b326-062fb5ff7eba",
+      "name": "Send a text message",
+      "webhookId": "a5a8faa2-f70b-493a-965e-d14ad2e9f29c",
+      "credentials": {
+        "telegramApi": {
+          "id": "j5rRdpRbhwcyVdR6",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4163d814-5b26-4da7-89c0-5dbf3e274bd0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "823e05b53a9f039112409b0aaa9551637a59cfabac75361b5080b7ff7307d49a"
+  },
+  "id": "WXrf6NcP1t7zyhW8",
+  "tags": []
+}

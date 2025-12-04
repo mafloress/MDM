@@ -1,0 +1,757 @@
+{
+    "name": "6. WhatsApp AI Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "inputSource": "passthrough"
+            },
+            "id": "ef1e2a1f-969a-46a0-8a10-c2598351f17f",
+            "name": "When Executed by Another Workflow",
+            "type": "n8n-nodes-base.executeWorkflowTrigger",
+            "position": [
+                -96,
+                240
+            ],
+            "typeVersion": 1.1
+        },
+        {
+            "parameters": {
+                "model": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "gpt-4.1-mini"
+                },
+                "options": {}
+            },
+            "id": "c1850a65-af67-4a27-b66b-b0a754d5dac7",
+            "name": "OpenAI Chat Model",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "position": [
+                0,
+                464
+            ],
+            "typeVersion": 1.2,
+            "credentials": {
+                "openAiApi": {
+                    "id": "YOUR_OPENAI_CREDENTIAL_ID",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "getAll",
+                "calendar": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "nabin.busines@gmail.com",
+                    "cachedResultName": "nabin.busines@gmail.com"
+                },
+                "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', ``, 'string') }}",
+                "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', ``, 'string') }}",
+                "options": {}
+            },
+            "id": "c4abb9a9-ec58-4be3-8b0e-e5b64587ef85",
+            "name": "Get many events in Google Calendar",
+            "type": "n8n-nodes-base.googleCalendarTool",
+            "position": [
+                128,
+                544
+            ],
+            "typeVersion": 1.3,
+            "credentials": {
+                "googleCalendarOAuth2": {
+                    "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+                    "name": "Google Calendar account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "calendar": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "nabin.busines@gmail.com",
+                    "cachedResultName": "nabin.busines@gmail.com"
+                },
+                "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+                "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+                "additionalFields": {}
+            },
+            "id": "2ea66224-df3a-43d9-9d0c-a883ca3bfffa",
+            "name": "Create an event in Google Calendar",
+            "type": "n8n-nodes-base.googleCalendarTool",
+            "position": [
+                288,
+                464
+            ],
+            "typeVersion": 1.3,
+            "credentials": {
+                "googleCalendarOAuth2": {
+                    "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+                    "name": "Google Calendar account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "delete",
+                "calendar": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "nabin.busines@gmail.com",
+                    "cachedResultName": "nabin.busines@gmail.com"
+                },
+                "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', ``, 'string') }}",
+                "options": {}
+            },
+            "id": "6d8420bd-e1b0-48ac-a1d0-3bc8d5c4c527",
+            "name": "Delete an event in Google Calendar",
+            "type": "n8n-nodes-base.googleCalendarTool",
+            "position": [
+                416,
+                544
+            ],
+            "typeVersion": 1.3,
+            "credentials": {
+                "googleCalendarOAuth2": {
+                    "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+                    "name": "Google Calendar account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "calendar": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "nabin.busines@gmail.com",
+                    "cachedResultName": "nabin.busines@gmail.com"
+                },
+                "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+                "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+                "additionalFields": {}
+            },
+            "id": "f9376ba3-bb24-422d-8993-88c2bc574d34",
+            "name": "Create an event in Google Calendar1",
+            "type": "n8n-nodes-base.googleCalendarTool",
+            "position": [
+                576,
+                464
+            ],
+            "typeVersion": 1.3,
+            "credentials": {
+                "googleCalendarOAuth2": {
+                    "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+                    "name": "Google Calendar account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "description": "Use this Agent to Check Calendar availability, book appointments, and effectively manage session schedules like updatinf and deleting event.",
+                "workflowId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "ZnQPXmxkpwVly7Ag",
+                    "cachedResultName": "Calendar Sub Agent"
+                },
+                "workflowInputs": {
+                    "value": {},
+                    "schema": [],
+                    "mappingMode": "defineBelow",
+                    "matchingColumns": [],
+                    "attemptToConvertTypes": false,
+                    "convertFieldsToString": false
+                }
+            },
+            "id": "7d97293f-a734-4e71-a7b5-ebf7fcf93ccc",
+            "name": "Calendar Tool",
+            "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+            "position": [
+                1488,
+                512
+            ],
+            "typeVersion": 2.2
+        },
+        {
+            "parameters": {
+                "description": "Trigger when customer requests details on diagnosis, Pricing, Quotes or general FAQ.",
+                "workflowId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "VzMwnIb1MrJgCvNb",
+                    "cachedResultName": "Knowledge Base Agent (FAQ) (Sub Agent)"
+                },
+                "workflowInputs": {
+                    "value": {},
+                    "schema": [],
+                    "mappingMode": "defineBelow",
+                    "matchingColumns": [],
+                    "attemptToConvertTypes": false,
+                    "convertFieldsToString": false
+                }
+            },
+            "id": "ec9fe757-5332-4270-9d08-1473893db865",
+            "name": "Knowledge Base Tool",
+            "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+            "position": [
+                1616,
+                512
+            ],
+            "typeVersion": 2.2
+        },
+        {
+            "parameters": {
+                "description": "Use this tool to send email to clients such as confirmation, updates or Follow ups to clients.",
+                "workflowId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "asdMM8Ip0p1BpgKo",
+                    "cachedResultName": "Email Sub Agent"
+                },
+                "workflowInputs": {
+                    "value": {},
+                    "schema": [],
+                    "mappingMode": "defineBelow",
+                    "matchingColumns": [],
+                    "attemptToConvertTypes": false,
+                    "convertFieldsToString": false
+                }
+            },
+            "id": "7caf4f13-aeed-45dc-90c1-ac9aac92fd3e",
+            "name": "Email Tool",
+            "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+            "position": [
+                1744,
+                512
+            ],
+            "typeVersion": 2.2
+        },
+        {
+            "parameters": {
+                "model": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "gpt-4.1-mini"
+                },
+                "options": {}
+            },
+            "id": "a713b290-82ff-4335-afa3-373e07a88992",
+            "name": "OpenAI Chat Model1",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "position": [
+                1200,
+                512
+            ],
+            "typeVersion": 1.2,
+            "credentials": {
+                "openAiApi": {
+                    "id": "YOUR_OPENAI_CREDENTIAL_ID",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "mode": "retrieve-as-tool",
+                "toolDescription": "Call this tool to fetch data for diagnosis, pricing quotes or any other general inquiries.",
+                "tableName": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "documents",
+                    "cachedResultName": "documents"
+                },
+                "options": {}
+            },
+            "id": "732f60b2-c64d-45fe-9863-4f4a5bf42404",
+            "name": "Supabase Vector Store",
+            "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+            "position": [
+                1856,
+                912
+            ],
+            "typeVersion": 1.3,
+            "credentials": {
+                "supabaseApi": {
+                    "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+                    "name": "Supabase account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "id": "b0d3dd02-bcf9-44c4-9f37-2de0078c0d3d",
+            "name": "Embeddings OpenAI",
+            "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+            "position": [
+                1872,
+                1056
+            ],
+            "typeVersion": 1.2,
+            "credentials": {
+                "openAiApi": {
+                    "id": "YOUR_OPENAI_CREDENTIAL_ID",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "gpt-4.1-mini"
+                },
+                "options": {}
+            },
+            "id": "f735d385-2e0b-4824-873e-5f27abab4239",
+            "name": "OpenAI Chat Model2",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "position": [
+                1760,
+                896
+            ],
+            "typeVersion": 1.2,
+            "credentials": {
+                "openAiApi": {
+                    "id": "YOUR_OPENAI_CREDENTIAL_ID",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+                "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+                "emailType": "text",
+                "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+                "options": {
+                    "appendAttribution": false
+                }
+            },
+            "id": "fe128157-84a4-465a-8363-9637b711fee9",
+            "name": "Send a message in Gmail",
+            "type": "n8n-nodes-base.gmailTool",
+            "position": [
+                768,
+                992
+            ],
+            "webhookId": "a22a1862-c2d8-49e5-914e-95d95a6743ff",
+            "typeVersion": 2.1,
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "YOUR_GMAIL_CREDENTIAL_ID",
+                    "name": "Gmail account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "gpt-4.1-mini"
+                },
+                "options": {}
+            },
+            "id": "3eb7dac6-7c0a-4018-9cd4-e37ae0ad43d5",
+            "name": "OpenAI Chat Model3",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "position": [
+                592,
+                992
+            ],
+            "typeVersion": 1.2,
+            "credentials": {
+                "openAiApi": {
+                    "id": "YOUR_OPENAI_CREDENTIAL_ID",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.usersMessage }}",
+                "options": {
+                    "systemMessage": "=#Role\nYou are the Primary Assistant Agent for Nabin AI Solutions, operating on WhatsApp.\n\nYour role is to interact naturally with customers, understand their requests, and delegate tasks to specialized sub-agents (Calendar Tool, Knowledge Base Tool, Email Tool).\n\nYou never perform tool tasks yourself. Instead, you:\nRoute queries to the correct sub-agent with structured inputs.\n\nReceive outputs from sub-agents.\nRephrase results into clear, conversational responses for the user.\n\nSub-Agents & When to Use Them\n\n##Calendar Tool\nFor creating, retrieving, updating, or deleting events.\nAlways confirm details before creation, update, or deletion.\nUse Get Events first before modifying or deleting.\nThe Duration of meeting would always be 30 minutes.\nDo not engage with customer too much make it only 1 or 2 conversation at max.\nOnce the meeting is booked ask the email adress with the user and once the email is received, send the email automatically to the user\n\n##Knowledge Base Tool\nFor retrieving FAQs, pricing, or diagnostic information.\nOnly provide structured results from the knowledge base never invent answers.\nIf safety-critical issues appear, highlight them clearly.\nDo not output all the details, summarixe the data and only output specific details the user is asking.\n\n##Email Tool\nFor sending confirmation emails, pricing emails, or updates.\nConfirm recipient and content with the user before sending.\nAlways output a full draft before marking STATUS: Email Sent ✅.\n\n#Workflow\nUnderstand the customer’s request.\nSelect the correct sub-agent.\nFormat the query according to the sub-agent’s input format.\nSend the request to the sub-agent.\nReceive the response and rephrase it for the customer (clear, concise, professional).\nIf multiple tools are required (e.g., Knowledge Base + Email), orchestrate them in sequence.\n\n#Example Conversations\n\n##Example 1 – Booking\nUser: “Book me a meeting on Friday at 11 AM.”\nAssistant: “Okay, booking you for Friday at 11 AM for 1 hour. Confirm?”\n→ On confirmation → Call Calendar Tool → Create Event\n→ Reply: “✅ Appointment booked successfully!”\n\n##Example 2 – Diagnostic → Booking\nUser: I would like to know more about your services? \nCall Knowledge Base Tool with user details and reply to the customer\n\nWould you like me to book you an Appointment?\n→ If yes → Call Calendar Tool → Get Many Events in Google Calendar →If Available → Create an Event\n\n##Example 3 – Email Confirmation\nUser: Email me the price range for a chatbot.\nAssistant:\nCall Knowledge Base Tool for chatbot.\nConfirm recipient email with user.\nCall Email subagent with subject: “Information regarding chatbot”\nReply: “📧 Price details have been sent to your email.”\n\n\n#Rules\n\nAlways confirm unclear details.\n\nNever guess or fabricate responses — rely only on sub-agents.\n\nKeep tone polite, clear, and professional.\n\nWhen using sub-agents, stick to their exact input/output formats.\n\nAlways present sub-agent outputs in a user-friendly WhatsApp message style.\n\n"
+                }
+            },
+            "id": "6789c995-c7c3-4049-a6f1-24ae8f584537",
+            "name": "WhatsApp AI Support Agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "position": [
+                1408,
+                288
+            ],
+            "typeVersion": 2.2
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.query }}",
+                "options": {
+                    "systemMessage": "=You are the RAG Knowledge Retrieval Sub-Agent for Nabin AI Solution.\nPurpose\nYour only responsibility is to query the knowledge base (see below) and return structured, relevant data.\nYou do not interact with customers directly.\nYou only respond to the main delegate agent’s requests.\nYou must provide only fact-based answers from the knowledge base—never invent data.\n\nInput Format\nYou will receive customer case details in the following format:\nName: [Customer Name]  \nIssue Description: [Customer’s problem or service request]  \n\n\nOutput Format\nYou must always return results in exactly this format:\n-LIKELY_FAULTS: [1–3 likely issues based on symptoms/service requested]  \n-DIAGNOSTIC_FEE: £45 (or £75 if complex electrical/advanced integration work)  \n-PRICE_RANGE: £[min]–£[max] (typical setup/customization cost range)  \n-SAFETY_CRITICAL: Yes/No  \n-ADDITIONAL_INFO: [Notes on add-ons, API integration, part availability, complexity, or special considerations]  \n\n\nRetrieval Guidelines\nMatch the customer’s issue/service to the Nabin AI Solution Knowledge Base (provided below).\nUse Pricing Model data to calculate cost ranges (plan fees, per-minute usage, and add-ons).\nMark SAFETY_CRITICAL: Yes if the issue involves failures that could cause major business disruption (e.g., call routing failures, escalation breakdowns, data sync loss).\nAlways phrase results as “likely,” “commonly,” or “typically” (never definitive).\nApply diagnostic fee:\n£45 standard (basic troubleshooting, configuration).\n£75 advanced (complex integrations, electrical/telecom layer, API debugging).\nInclude add-ons or complexity notes under ADDITIONAL_INFO.\n"
+                }
+            },
+            "id": "5ba7d2b2-4bf0-4374-a98b-6159c33c0f5c",
+            "name": "Knowledge Base Agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "position": [
+                1792,
+                704
+            ],
+            "typeVersion": 2.2
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $json.usersMobileNumber }}",
+                "contextWindowLength": 50
+            },
+            "id": "53bc21a4-e700-44ec-96ec-4e585f1de6be",
+            "name": "Conversation Memory (Postgres)",
+            "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+            "position": [
+                1360,
+                512
+            ],
+            "typeVersion": 1.3,
+            "credentials": {
+                "postgres": {
+                    "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+                    "name": "Postgres account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.query }}",
+                "options": {
+                    "systemMessage": "=# Role\nYou are a Calendar Assistant.\nYour job is to create, retrieve, update, and delete events in the user's calendar with complete accuracy.\n\n# Calendar Management Tools\n-Create Event → Use for adding new events\n-Get Events → Use to retrieve the user's calendar schedule\n-Delete Event → First call Get Events to obtain the event ID, then delete it\n-Update Event → First call Get Events to obtain the event ID, then update it\n\n# Rules\n-Convert each incoming query into the correct calendar action\n-Always collect and use exact event details: title, date, time, and any notes\n-The current date/time is: {{ $now.toString() }}\n-The duration of the event is always 30 minutes\n-Always confirm event details before creation, update, or deletion\n-IDs for update or delete actions must always come from a Get Events call to avoid errors\n\n# Accuracy Requirements\n-Event times and dates must match exactly what the user provides no approximations\n-Never assume repeated events unless explicitly stated\n-Always check for conflicts using Get Events before creating a new event\n\n# Once Booking is confirmed with the user Always Input this in google calendar.\n-Task: Create Event\n-Title: [Event Title]\n-Date: [YYYY-MM-DD]\n-Time: [HH:mm]\n-Notes: [Optional]\n\n# Output\nRespond only with concise confirmation or error information for the given action.\n\n#Example\nExample 1 – Create Event\nUser: Book a meeting at 5 September at 2 PM.\nAssistant:\n Confirming event: Meeting on 2025-09-05 at 14:00\nTask for AI:\n ✅ Task: Create Event\nTitle: Meeting with { User’s Name }\n\n\nDate: 2025-09-05\n\n\nTime: 14:00\n\n\nNotes: Quarterly report\n\n\n\nExample 2 – Update Event\nUser: Move my meeting on 5 September at 2 PM to 6 September at 3 PM.\nAssistant:\n Found event on 2025-09-05 at 14:00. Updating to 2025-09-06 at 15:00.\nTask for AI:\n ✅ Task: Update Event\nID: { Event ID }\n\n\nTitle: Meeting with {User’s Name }\n\n\nDate: 2025-09-06\n\n\nTime: 15:00\n\n\nNotes: Updated schedule\n\n\n\nExample 3 – Delete Event\nUser: Cancel my meeting on 7 September at 10:30 AM.\nAssistant:\n Found event on 2025-09-07 at 10:30. Deleting.\nTask for AI:\n ✅ Task: Delete Event\nID: { Event ID }\n\n\n\nExample 4 – Conflict\nUser: Book a call on 7 September at 10:30 AM.\nAssistant:\n ❌ Error: You already have an event on 2025-09-07 at 10:30.\nTask for AI:\n No action\n"
+                }
+            },
+            "id": "df5da4fd-ca90-4eb6-91ea-0881c9598d97",
+            "name": "Calendar Agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "position": [
+                176,
+                240
+            ],
+            "typeVersion": 2.2
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.query }}",
+                "options": {
+                    "systemMessage": "=\n#Role\n\nYou are the Email Agent for Nabin AI solutions.\nYour job is to send professional emails based on given instructions. \n\nYou do not create content outside the provided context — only generate and send structured emails.\n\n#Input Format\nYou will receive email request data in this format:\nSender: [Business/Agent Name]\nRecipient: [Recipient Name + Email Address]\nSubject: [Email Subject]\nContext: [Details, purpose, or conversation history]\nTone: [Formal / Friendly / Concise / Apologetic / Promotional]\nAction: [Send]\n\n\n#Task\n\nBased on the input:\n\nIf Action = Send,  then mark as:\nSTATUS: Email Sent ✅\n[Include full sent email for record keeping]\n\n#Guidelines\nAlways start with a polite greeting (e.g., Dear {Name}, Hi {Name}\nMatch the Tone input (formal, friendly, concise, apologetic, promotional)\nKeep the structure: Greeting → Main Content → Closing → Signature\nEnsure grammar, clarity, and professionalism\nFor complaints → acknowledge issue + offer solution\nFor promotions → highlight value + clear CTA (Call To Action)\nUse placeholders {Name}, {Date}, {Offer} if information is missing\nDo not include personal opinions or unverified details\n\n#Response Rules\nDo not invent context outside provided input\nAlways output a full draft email before sending\nRespect Action: only “send” when explicitly instructed\nKeep formatting consistent with professional email standards\n\nConfirm STATUS: Email Sent ✅ after sending\n\n\n"
+                }
+            },
+            "id": "659ce277-28da-4ba1-9373-1d662d708ae3",
+            "name": "Email Agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "position": [
+                592,
+                768
+            ],
+            "typeVersion": 2.2
+        },
+        {
+            "parameters": {
+                "from": "={{ $('Format Incoming Message').item.json.WhatsappAiAgentNumber }}",
+                "to": "={{ $('Format Incoming Message').item.json.usersMobileNumber }}",
+                "toWhatsapp": true,
+                "message": "={{ $json.output }}",
+                "options": {}
+            },
+            "id": "88a75e56-0891-4cc9-86d5-2ffa9bd83311",
+            "name": "Send WhatsApp Reply",
+            "type": "n8n-nodes-base.twilio",
+            "position": [
+                1824,
+                405
+            ],
+            "typeVersion": 1,
+            "credentials": {
+                "twilioApi": {
+                    "id": "YOUR_TWILIO_CREDENTIAL_ID",
+                    "name": "Twilio account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "updates": [
+                    "com.twilio.messaging.inbound-message.received"
+                ]
+            },
+            "id": "ce386e9f-5eb4-4044-a34e-4d48be5fdfb0",
+            "name": "Incoming WhatsApp Message",
+            "type": "n8n-nodes-base.twilioTrigger",
+            "position": [
+                880,
+                288
+            ],
+            "webhookId": "2983ca40-cad7-45de-b9d9-13698a65fe09",
+            "typeVersion": 1,
+            "credentials": {
+                "twilioApi": {
+                    "id": "YOUR_TWILIO_CREDENTIAL_ID",
+                    "name": "Twilio account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "9053a9fd-1998-4cd5-9b5d-2913db07f978",
+                            "name": "usersMessage",
+                            "type": "string",
+                            "value": "={{ $json.data.body }}"
+                        },
+                        {
+                            "id": "2577d8f1-c8ba-4bfe-989c-6182531ac4e8",
+                            "name": "usersMobileNumber",
+                            "type": "string",
+                            "value": "={{ $json.data.from.replaceAll('whatsapp:', '') }}"
+                        },
+                        {
+                            "id": "01a58a24-7ea5-487d-8ca2-aad875125657",
+                            "name": "WhatsappAiAgentNumber",
+                            "type": "string",
+                            "value": "={{ $json.data.to.replaceAll('whatsapp:', '') }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "36e0c9e7-d322-4338-a47c-26e525345b73",
+            "name": "Format Incoming Message",
+            "type": "n8n-nodes-base.set",
+            "position": [
+                1120,
+                288
+            ],
+            "typeVersion": 3.4
+        }
+    ],
+    "pinData": {},
+    "connections": {
+        "Email Tool": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "WhatsApp AI Support Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Calendar Tool": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "WhatsApp AI Support Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Embeddings OpenAI": {
+            "ai_embedding": [
+                [
+                    {
+                        "node": "Supabase Vector Store",
+                        "type": "ai_embedding",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Chat Model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Calendar Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Chat Model1": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "WhatsApp AI Support Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Chat Model2": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Knowledge Base Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Chat Model3": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Email Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Knowledge Base Tool": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "WhatsApp AI Support Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Supabase Vector Store": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Knowledge Base Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Format Incoming Message": {
+            "main": [
+                [
+                    {
+                        "node": "WhatsApp AI Support Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send a message in Gmail": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Email Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Incoming WhatsApp Message": {
+            "main": [
+                [
+                    {
+                        "node": "Format Incoming Message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "WhatsApp AI Support Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Send WhatsApp Reply",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Conversation Memory (Postgres)": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "WhatsApp AI Support Agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "When Executed by Another Workflow": {
+            "main": [
+                [
+                    {
+                        "node": "Calendar Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create an event in Google Calendar": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Calendar Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Delete an event in Google Calendar": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Calendar Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get many events in Google Calendar": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Calendar Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create an event in Google Calendar1": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "Calendar Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

@@ -1,0 +1,128 @@
+{
+    "name": "3. Recursive Reminder",
+    "nodes": [
+        {
+            "parameters": {
+                "triggerTimes": {
+                    "item": [
+                        {
+                            "mode": "everyDay",
+                            "hour": 9
+                        }
+                    ]
+                }
+            },
+            "name": "Cron Trigger",
+            "type": "n8n-nodes-base.cron",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "list",
+                "baseId": "appYOURBASEID",
+                "table": "Clients",
+                "filterByFormula": "AND({Status}='EN ESPERA', DATETIME_DIFF(NOW(), {LastContact}, 'days') > 30)"
+            },
+            "name": "List Pending Clients",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "YOUR_AIRTABLE_CREDENTIAL_ID",
+                    "name": "Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "message",
+                "subject": "Recordatorio: WMF Global",
+                "message": "=Hola {{$json[\"fields\"][\"Name\"]}}, seguimos esperando tu respuesta...",
+                "toEmail": "={{$json[\"fields\"][\"Email\"]}}"
+            },
+            "name": "Send Reminder Email",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "YOUR_GMAIL_CREDENTIAL_ID",
+                    "name": "Gmail Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "baseId": "appYOURBASEID",
+                "table": "Clients",
+                "id": "={{$json[\"id\"]}}",
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "LastContact": "={{new Date().toISOString()}}"
+                    }
+                }
+            },
+            "name": "Update Last Contact",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "YOUR_AIRTABLE_CREDENTIAL_ID",
+                    "name": "Airtable API"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Cron Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "List Pending Clients",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "List Pending Clients": {
+            "main": [
+                [
+                    {
+                        "node": "Send Reminder Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send Reminder Email": {
+            "main": [
+                [
+                    {
+                        "node": "Update Last Contact",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

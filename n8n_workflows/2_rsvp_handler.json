@@ -1,0 +1,121 @@
+{
+    "name": "2. RSVP Handler",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "rsvp",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "name": "Webhook RSVP",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{$json[\"query\"][\"response\"]}}",
+                            "value2": "yes"
+                        }
+                    ]
+                }
+            },
+            "name": "If Accepted",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "baseId": "appYOURBASEID",
+                "table": "Clients",
+                "id": "={{$json[\"query\"][\"id\"]}}",
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Status": "ACEPTADO"
+                    }
+                }
+            },
+            "name": "Update Status Accepted",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                650,
+                200
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "YOUR_AIRTABLE_CREDENTIAL_ID",
+                    "name": "Airtable API"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "message",
+                "subject": "Registro WMF Global",
+                "message": "=Gracias por aceptar. Por favor completa tu registro aquí: https://connect.eventtia.com/es/public/events/wmf-global-caribe-mexicano-2025/registration/attendees?attendee_type=175640&email={{$json[\"query\"][\"email\"]}}",
+                "toEmail": "={{$json[\"query\"][\"email\"]}}"
+            },
+            "name": "Send Registration Link",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 1,
+            "position": [
+                850,
+                200
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "YOUR_GMAIL_CREDENTIAL_ID",
+                    "name": "Gmail Account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Webhook RSVP": {
+            "main": [
+                [
+                    {
+                        "node": "If Accepted",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "If Accepted": {
+            "main": [
+                [
+                    {
+                        "node": "Update Status Accepted",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update Status Accepted": {
+            "main": [
+                [
+                    {
+                        "node": "Send Registration Link",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

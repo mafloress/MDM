@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Authentication - Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center">
+<div class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto">
+<!-- Left Panel -->
+<div class="w-full lg:w-1/2 bg-gray-100 dark:bg-[#111a22] flex flex-col justify-between p-8 sm:p-12">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary text-3xl">hub</span>
+<span class="text-xl font-bold text-gray-800 dark:text-white">N8N Congress</span>
+</div>
+<div class="my-12">
+<img class="w-full h-auto object-cover rounded-xl" data-alt="Abstract image of a modern office with data visualizations overlaid" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7abLOP2RcneAPxcWYMDlZKYUQcAZ-o7T0lPPgd8iRuUuvKWWXlRbcgCXsJGGDxPlbQaWGzzb3vYrsYQqarceE-nKcEV6pSk8wxmPuj_D6ki-8wXcPufo-VmBG4bx-_KTXGH6m0t7sWEsgbVJtbUFe2dNU3QiC85c-tRVZnmGk2opkFqhK85sLbHgzc_4wdLbfcIINWrLLUlQ9robMQB4UXwdWeI5foxe2JhYPqJHTISIPmxILkXfomoTakQRgK3Rt86X_RhX5ZqU"/>
+<h2 class="text-3xl font-bold mt-8 text-gray-800 dark:text-white">Streamline Your Congressional Client Management.</h2>
+<p class="mt-4 text-gray-600 dark:text-gray-400">Integrate, automate, and manage with unparalleled efficiency and security. Our platform brings your data and workflows together.</p>
+</div>
+<div class="text-sm text-gray-500 dark:text-gray-400">© 2024 N8N Congress Inc. All Rights Reserved.</div>
+</div>
+<!-- Right Panel -->
+<div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12">
+<div class="flex flex-col w-full max-w-md">
+<!-- Segmented Buttons -->
+<div class="flex w-full mb-8">
+<div class="flex h-12 flex-1 items-center justify-center rounded-lg bg-gray-200 dark:bg-[#233648] p-1.5">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-[#111a22] has-[:checked]:shadow-sm has-[:checked]:text-gray-900 dark:has-[:checked]:text-white text-gray-500 dark:text-[#92adc9] text-sm font-semibold leading-normal transition-colors duration-200">
+<span class="truncate">Login</span>
+<input checked="" class="invisible w-0" name="auth-toggle" type="radio" value="Login"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-[#111a22] has-[:checked]:shadow-sm has-[:checked]:text-gray-900 dark:has-[:checked]:text-white text-gray-500 dark:text-[#92adc9] text-sm font-semibold leading-normal transition-colors duration-200">
+<span class="truncate">Sign Up</span>
+<input class="invisible w-0" name="auth-toggle" type="radio" value="Sign Up"/>
+</label>
+</div>
+</div>
+<!-- Headline -->
+<h1 class="text-gray-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight text-left pb-1">Welcome Back</h1>
+<p class="text-gray-500 dark:text-gray-400 text-base mb-6">Enter your credentials to access your account.</p>
+<!-- Form Fields -->
+<form class="flex flex-col gap-y-5">
+<!-- Email Field -->
+<label class="flex flex-col flex-1">
+<p class="text-gray-800 dark:text-white text-sm font-medium leading-normal pb-2">Email Address</p>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-4 text-gray-400 dark:text-gray-500">mail</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-[#324d67] bg-gray-50 dark:bg-[#192633] focus:border-primary h-12 placeholder:text-gray-400 dark:placeholder:text-[#92adc9] pl-12 pr-4 py-2 text-base font-normal leading-normal" placeholder="you@company.com" value=""/>
+</div>
+</label>
+<!-- Password Field -->
+<label class="flex flex-col flex-1">
+<div class="flex justify-between items-baseline pb-2">
+<p class="text-gray-800 dark:text-white text-sm font-medium leading-normal">Password</p>
+<a class="text-primary hover:underline text-sm font-normal leading-normal" href="#">Forgot Password?</a>
+</div>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-4 text-gray-400 dark:text-gray-500">lock</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-[#324d67] bg-gray-50 dark:bg-[#192633] focus:border-primary h-12 placeholder:text-gray-400 dark:placeholder:text-[#92adc9] pl-12 pr-12 py-2 text-base font-normal leading-normal" placeholder="Enter your password" type="password" value=""/>
+<button class="absolute right-4 text-gray-400 dark:text-gray-500 hover:text-primary" type="button">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+</div>
+</label>
+<!-- CTA Button -->
+<button class="flex items-center justify-center text-white bg-primary hover:bg-primary/90 focus:ring-4 focus:ring-primary/40 font-semibold rounded-lg text-base px-5 py-3.5 mt-4 transition-colors duration-200">
+                                    Login
+                                </button>
+<div class="relative flex items-center my-2">
+<div class="flex-grow border-t border-gray-300 dark:border-gray-700"></div>
+<span class="flex-shrink mx-4 text-sm text-gray-500 dark:text-gray-400">Or continue with</span>
+<div class="flex-grow border-t border-gray-300 dark:border-gray-700"></div>
+</div>
+<!-- Social Logins -->
+<div class="flex gap-4">
+<button class="flex flex-1 items-center justify-center gap-2 border border-gray-300 dark:border-[#324d67] bg-white dark:bg-[#192633] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#233648] font-semibold rounded-lg text-base px-5 py-3 transition-colors duration-200" type="button">
+<svg class="w-5 h-5" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_3022_381)"><path d="M21.9999 12.2242C21.9999 11.3915 21.9219 10.5815 21.7659 9.79492H12.2429V14.3999H17.8469C17.5829 15.9392 16.7469 17.2439 15.4069 18.0942V20.8499H19.2999C20.9769 19.3442 21.9999 17.0272 21.9999 14.2499V12.2242Z" fill="#4285F4"></path><path d="M12.2431 22.4999C15.0211 22.4999 17.3611 21.5892 19.3001 20.0899L15.4071 17.3342C14.4641 17.9942 13.3421 18.3749 12.2431 18.3749C10.0571 18.3749 8.21413 16.9442 7.55013 14.9942H3.5271V17.8299C5.45413 20.6249 8.61813 22.4999 12.2431 22.4999Z" fill="#34A853"></path><path d="M7.54992 14.9941C7.32992 14.3291 7.19992 13.6291 7.19992 12.8991C7.19992 12.1691 7.32992 11.4691 7.54992 10.8041V7.96838H3.52692C2.74692 9.49905 2.24992 11.1491 2.24992 12.8991C2.24992 14.6491 2.74692 16.2991 3.52692 17.8297L7.54992 14.9941Z" fill="#FBBC05"></path><path d="M12.2431 7.42491C13.5681 7.42491 14.7081 7.88991 15.6521 8.78491L19.3701 5.21491C17.3551 3.32491 15.0161 2.30005 12.2431 2.30005C8.61813 2.30005 5.45413 4.17505 3.5271 6.96991L7.55013 9.79991C8.21413 7.84991 10.0571 6.42491 12.2431 6.42491V7.42491Z" fill="#EA4335"></path></g><defs><clippath id="clip0_3022_381"><rect fill="white" height="20" transform="translate(2 2.5)" width="20"></rect></clippath></defs></svg>
+<span>Google</span>
+</button>
+<button class="flex flex-1 items-center justify-center gap-2 border border-gray-300 dark:border-[#324d67] bg-white dark:bg-[#192633] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#233648] font-semibold rounded-lg text-base px-5 py-3 transition-colors duration-200" type="button">
+<svg class="w-5 h-5 text-gray-800 dark:text-white" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12C0 17.433 3.738 21.895 8.75 23.475V15.25H6.125V12H8.75V9.67C8.75 7.078 10.33 5.625 12.684 5.625C13.313 5.625 13.972 5.733 14.625 5.845V8.5H13.292C11.977 8.5 11.75 9.278 11.75 10.13V12H14.5L14.075 15.25H11.75V24C18.66 23.23 24 18.067 24 12C24 5.372 18.628 0 12 0Z"></path></svg>
+<span>Facebook</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

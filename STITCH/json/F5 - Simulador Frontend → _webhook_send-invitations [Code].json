@@ -1,0 +1,84 @@
+{
+  "name": "F5 - Simulador Frontend → /webhook/send-invitations [Code]",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4b5f6542-ddd8-4c6a-ae52-d85a6c9e6650"
+    },
+    {
+      "parameters": {
+        "language": "javascript"
+      },
+      "name": "Code - Build Example Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        304,
+        0
+      ],
+      "id": "0da85ff8-aebc-44c6-bfdd-f1a13d3b6917"
+    },
+    {
+      "parameters": {
+        "url": "={{$env.N8N_PUBLIC_BASE_URL}}/webhook/send-invitations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTTP - POST /webhook/send-invitations",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        624,
+        0
+      ],
+      "id": "9b3759b4-4941-4ae2-a411-394d00e06ac3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code - Build Example Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Build Example Payload": {
+      "main": [
+        [
+          {
+            "node": "HTTP - POST /webhook/send-invitations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "58a59f1e-e5ce-46fc-a61e-1fcb72aeef78",
+  "meta": {
+    "instanceId": "823e05b53a9f039112409b0aaa9551637a59cfabac75361b5080b7ff7307d49a"
+  },
+  "id": "5mQlfqB3X1zYRNmQ",
+  "tags": []
+}
