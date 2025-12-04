@@ -53,58 +53,63 @@ Usaremos Docker para ejecutar n8n.
 
 4. Importa los flujos JSON ubicados en la carpeta `n8n_workflows` de este repositorio a tu instancia de n8n.
 
-## 3. Instalación de la Plataforma Web (Python)
+## 3. Instalación de la Plataforma Web (Python/Reflex)
 
-1. Clona este repositorio (o sube los archivos):
+1. Instalar Node.js (Requerido por Reflex):
+   ```bash
+   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+   ```
+
+2. Clona este repositorio (o sube los archivos):
    ```bash
    cd ~
    git clone <tu-repo-url> app-gestion
    cd app-gestion/app
    ```
 
-2. Crea un entorno virtual e instala dependencias:
+3. Crea un entorno virtual e instala dependencias:
    ```bash
    python3 -m venv venv
    source venv/bin/activate
    pip install -r requirements.txt
    ```
 
-3. Configura las variables de entorno:
+4. Configura las variables de entorno:
    Crea un archivo `.env` en la carpeta `app`:
    ```bash
    nano .env
    ```
    Contenido:
    ```
-   SECRET_KEY=generar_una_clave_segura
-   AIRTABLE_API_KEY=tu_api_key_de_airtable
-   AIRTABLE_BASE_ID=id_de_tu_base
-   AIRTABLE_TABLE_NAME=Clients
+   CLICKUP_API_TOKEN=tu_token_personal_de_clickup
+   CLICKUP_LIST_ID=id_de_la_lista_de_clientes
    N8N_WEBHOOK_URL=https://n8n.tudominio.com/webhook/trigger-sourcing
+   N8N_INVITE_WEBHOOK_URL=https://n8n.tudominio.com/webhook/send-invitations
    ```
 
-4. Prueba la aplicación:
+5. Inicializar Reflex:
    ```bash
-   gunicorn --bind 0.0.0.0:5000 app:app
+   reflex init
    ```
-   (Presiona Ctrl+C para detener después de verificar que arranca).
 
-5. Configura Systemd para mantener la app corriendo:
+6. Configura Systemd para mantener la app corriendo:
    ```bash
    sudo nano /etc/systemd/system/gestion-app.service
    ```
    Contenido:
    ```ini
    [Unit]
-   Description=Gunicorn instance to serve Gestion App
+   Description=Reflex App Service
    After=network.target
 
    [Service]
    User=root
    Group=www-data
    WorkingDirectory=/root/app-gestion/app
-   Environment="PATH=/root/app-gestion/app/venv/bin"
-   ExecStart=/root/app-gestion/app/venv/bin/gunicorn --workers 3 --bind unix:app.sock -m 007 app:app
+   Environment="PATH=/root/app-gestion/app/venv/bin:/usr/bin"
+   ExecStart=/root/app-gestion/app/venv/bin/reflex run
+   Restart=always
 
    [Install]
    WantedBy=multi-user.target
@@ -127,14 +132,29 @@ Configura Nginx para servir tanto la app como n8n en puertos estándar (80/443).
 
 2. Contenido (ejemplo básico):
    ```nginx
-   # App Python
+   # App Reflex
    server {
        listen 80;
        server_name panel.tudominio.com;
 
        location / {
-           include proxy_params;
-           proxy_pass http://unix:/root/app-gestion/app/app.sock;
+           proxy_pass http://localhost:3000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection "upgrade";
+       }
+
+       location /_event {
+           proxy_pass http://localhost:8000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection "Upgrade";
+           proxy_set_header Host $host;
+       }
+
+       location /ping {
+           proxy_pass http://localhost:8000;
        }
    }
 
@@ -167,12 +187,14 @@ Configura Nginx para servir tanto la app como n8n en puertos estándar (80/443).
    sudo certbot --nginx -d panel.tudominio.com -d n8n.tudominio.com
    ```
 
-## 5. Configuración de Airtable y Apify
+## 5. Configuración de ClickUp y Apify
 
-1. **Airtable**:
-   - Crea una base llamada "Event Management".
-   - Crea una tabla "Clients".
-   - Columnas necesarias: `Name` (Text), `Email` (Email), `Status` (Single Select: INVITACIÓN, ACEPTADO, EN ESPERA, VALIDACIÓN DOCTOS, ACEPTADOS), `Company` (Text), `LastContact` (Date), `Documents` (Attachments).
+1. **ClickUp**:
+   - Crea un Espacio (Space) y una Lista llamada "Clients" (o el nombre que prefieras).
+   - Obtén el ID de la Lista (lo puedes ver en la URL cuando estás en la lista).
+   - Genera un API Token personal en los ajustes de tu usuario (Apps).
+   - Asegúrate de tener los estados (Statuses) configurados: INVITACIÓN, ACEPTADO, EN ESPERA, VALIDACIÓN DOCTOS, ACEPTADOS.
+   - (Opcional) Crea Custom Fields para: `Company` (Text), `Email` (Email), `LastContact` (Date).
 
 2. **Apify**:
    - Crea una cuenta en Apify.

@@ -64,22 +64,22 @@ cd app-gestion
 2.  Crea un archivo `docker-compose.yml` en la raíz del proyecto (o usa el siguiente comando para generarlo):
 
     ```bash
-    cat <<EOF > docker-compose.yml
-    version: "3"
-    services:
-      n8n:
-        image: n8nio/n8n:latest
-        ports:
-          - "5678:5678"
-        environment:
-          - N8N_BASIC_AUTH_ACTIVE=true
-          - N8N_BASIC_AUTH_USER=admin
-          - N8N_BASIC_AUTH_PASSWORD=tu_password_seguro  # <--- CAMBIA ESTO
-          - WEBHOOK_URL=http://TU_IP_PUBLICA_O_DOMINIO:5678/
-        volumes:
-          - ~/.n8n:/home/node/.n8n
-        restart: always
-    EOF
+cat <<EOF > docker-compose.yml
+version: "3"
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=tu_password_seguro  # <--- CAMBIA ESTO
+      - WEBHOOK_URL=http://TU_IP_PUBLICA_O_DOMINIO:5678/
+    volumes:
+      - ~/.n8n:/home/node/.n8n
+    restart: always
+EOF
     ```
     *Nota: Reemplaza `TU_IP_PUBLICA_O_DOMINIO` con la IP externa de tu instancia GCP.*
 
@@ -88,62 +88,65 @@ cd app-gestion
     docker compose up -d
     ```
 
-## 6. Despliegue de la Web App (Python/Flask)
+## 6. Despliegue de la Web App (Python/Reflex)
 
-1.  Prepara el entorno Python:
+1.  Instalar Node.js (Requerido por Reflex):
+    ```bash
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+    ```
+
+2.  Prepara el entorno Python:
     ```bash
     cd ~/app-gestion/app
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
-    pip install gunicorn
     ```
 
-2.  Configura las variables de entorno:
+3.  Configura las variables de entorno:
     Crea el archivo `.env`:
     ```bash
     nano .env
     ```
     Pega y edita lo siguiente:
     ```ini
-    SECRET_KEY=genera_una_clave_larga_y_segura
-    AIRTABLE_API_KEY=tu_key_de_airtable
-    AIRTABLE_BASE_ID=tu_base_id
-    AIRTABLE_TABLE_NAME=Clients
-    # URL del webhook de n8n (apuntando al contenedor local o IP pública)
-    N8N_WEBHOOK_URL=http://localhost:5678/webhook/trigger-sourcing
-    N8N_INVITE_WEBHOOK_URL=http://localhost:5678/webhook/send-invitations
+CLICKUP_API_TOKEN=tu_token_personal_de_clickup
+CLICKUP_LIST_ID=id_de_la_lista_de_clientes
+# URL del webhook de n8n (apuntando al contenedor local o IP pública)
+N8N_WEBHOOK_URL=http://localhost:5678/webhook/trigger-sourcing
+N8N_INVITE_WEBHOOK_URL=http://localhost:5678/webhook/send-invitations
     ```
 
-3.  Prueba que la app funcione:
+4.  Inicializar Reflex:
     ```bash
-    gunicorn --bind 0.0.0.0:5000 app:app
+    reflex init
     ```
-    *(Deberías ver que inicia. Presiona Ctrl+C para salir).*
 
-4.  Crear servicio Systemd (para que corra en segundo plano):
+5.  Crear servicio Systemd (para que corra en segundo plano):
     ```bash
     sudo nano /etc/systemd/system/gestion-app.service
     ```
     Contenido (ajusta `TU_USUARIO` por tu nombre de usuario en linux, ej: `ubuntu`):
     ```ini
-    [Unit]
-    Description=Gunicorn instance to serve Gestion App
-    After=network.target
+[Unit]
+Description=Reflex App Service
+After=network.target
 
-    [Service]
-    User=TU_USUARIO
-    Group=www-data
-    WorkingDirectory=/home/TU_USUARIO/app-gestion/app
-    Environment="PATH=/home/TU_USUARIO/app-gestion/app/venv/bin"
-    ExecStart=/home/TU_USUARIO/app-gestion/app/venv/bin/gunicorn --workers 3 --bind unix:app.sock -m 007 app:app
+[Service]
+User=TU_USUARIO
+Group=www-data
+WorkingDirectory=/home/TU_USUARIO/app-gestion/app
+Environment="PATH=/home/TU_USUARIO/app-gestion/app/venv/bin:/usr/bin"
+ExecStart=/home/TU_USUARIO/app-gestion/app/venv/bin/reflex run
+Restart=always
 
-    [Install]
-    WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
     ```
     *Ojo: Reemplaza `TU_USUARIO` con el resultado de ejecutar `whoami`.*
 
-5.  Iniciar el servicio:
+6.  Iniciar el servicio:
     ```bash
     sudo systemctl start gestion-app
     sudo systemctl enable gestion-app
@@ -152,8 +155,8 @@ cd app-gestion
 ## 7. Configuración de Nginx (Proxy Inverso)
 
 Configuraremos Nginx para que:
-- La Web App sea accesible en el puerto 80 (HTTP).
-- n8n sea accesible en `/n8n/` o en un puerto distinto (aquí usaremos un subdominio o puerto directo, pero para simplificar en una sola IP, dejaremos n8n en su puerto 5678 y la app en el 80).
+- La Web App (Reflex) sea accesible en el puerto 80 (HTTP).
+- n8n sea accesible en el puerto 5678.
 
 1.  Crear configuración de Nginx:
     ```bash
@@ -167,12 +170,27 @@ Configuraremos Nginx para que:
         server_name _;  # Acepta cualquier IP/Dominio
 
         location / {
-            include proxy_params;
-            proxy_pass http://unix:/home/TU_USUARIO/app-gestion/app/app.sock;
+            proxy_pass http://localhost:3000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+        
+        # Proxy para el backend de Reflex (Websockets)
+        location /_event {
+            proxy_pass http://localhost:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            proxy_set_header Host $host;
+        }
+        
+        location /ping {
+            proxy_pass http://localhost:8000;
         }
     }
     ```
-    *Recuerda reemplazar `TU_USUARIO` nuevamente.*
 
 3.  Activar y reiniciar Nginx:
     ```bash

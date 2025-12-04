@@ -4,11 +4,11 @@ Este proyecto es una solución integral para la gestión de invitados a congreso
 
 ## Componentes
 
-1. **Plataforma Web (Python/Flask)**:
+1. **Plataforma Web (Python/Reflex)**:
    - Panel de control tipo Kanban para visualizar el estado de los invitados.
    - Gestión de documentos (subida de pasaportes, boletos, etc.).
    - Inicio de sesión seguro.
-   - Interfaz moderna y responsiva (Tailwind CSS + Glassmorphism).
+   - Interfaz moderna y responsiva (Reflex UI + Glassmorphism).
 
 2. **Automatización (n8n)**:
    - Flujos de trabajo para:
@@ -20,16 +20,15 @@ Este proyecto es una solución integral para la gestión de invitados a congreso
      - **Nuevo**: Asistente CRM en Telegram (Consultas en lenguaje natural).
      - **Nuevo**: Agente de Soporte WhatsApp con IA (LangChain).
 
-3. **Base de Datos (Airtable)**:
-   - Almacenamiento centralizado de la información de los clientes y sus estados.
+3. **Base de Datos (ClickUp)**:
+   - Almacenamiento centralizado de la información de los clientes y sus estados (Listas y Tareas).
 
 ## Estructura del Proyecto
 
 ```
-/app                # Código fuente de la aplicación web Python
-  /static           # Archivos CSS y JS
-  /templates        # Plantillas HTML
-  app.py            # Lógica del servidor Flask
+/app                # Código fuente de la aplicación web Python (Reflex)
+  rxconfig.py       # Configuración de Reflex
+  mdm.py            # Lógica y UI de la aplicación
 /n8n_workflows      # Archivos JSON para importar en n8n
 /documentation      # Guías de despliegue y configuración
 ```
@@ -41,11 +40,13 @@ Este proyecto es una solución integral para la gestión de invitados a congreso
    cd app
    pip install -r requirements.txt
    ```
-2. Configurar `.env` (ver `app/app.py` para variables requeridas).
-3. Ejecutar:
+2. Configurar `.env` (ver `app/mdm.py` para variables requeridas).
+3. Inicializar y ejecutar Reflex:
    ```bash
-   python app.py
+   reflex init
+   reflex run
    ```
+   La app estará disponible en `http://localhost:3000`.
 
 ## Despliegue en Producción
 
