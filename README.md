@@ -49,4 +49,5 @@ Este proyecto es una solución integral para la gestión de invitados a congreso
 
 ## Despliegue en Producción
 
-Consulta la guía detallada en `documentation/DEPLOYMENT.md` para instalar en un VPS Ubuntu con Docker y Nginx.
+- **VPS Genérico**: Consulta `documentation/DEPLOYMENT.md`.
+- **Google Cloud (GCP)**: Consulta `documentation/GCP_DEPLOYMENT.md` para Ubuntu 24.04 LTS.
